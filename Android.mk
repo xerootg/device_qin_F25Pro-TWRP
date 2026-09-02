@@ -7,6 +7,6 @@
 
 LOCAL_PATH := $(call my-dir)
 
-ifeq ($(TARGET_DEVICE),TB330FU)
+ifeq ($(TARGET_DEVICE),F25Pro)
 include $(call all-subdir-makefiles,$(LOCAL_PATH))
 endif

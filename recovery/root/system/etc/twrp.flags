@@ -1,33 +1,43 @@
-# Dynamic partition
-/system_image	    emmc	  /dev/block/bootdevice/by-name/system                                	flags=backup=1;display="System Image";flashimg=1
-/system_ext_image	emmc	  /dev/block/bootdevice/by-name/system_ext                              flags=backup=1;display="System Ext Image";flashimg=1
-/vendor_image	    emmc	  /dev/block/bootdevice/by-name/vendor                              	flags=backup=1;display="Vendor Image";flashimg=1
-/product_image	    emmc	  /dev/block/bootdevice/by-name/product                               	flags=backup=1;display="Product Image";flashimg=1
-/super_image	    emmc	  /dev/block/bootdevice/by-name/super_image                               	flags=backup=1;display="Super Image";flashimg=1
+# Qin F25 Pro (mt6768) TWRP flags
 
-/protect_f          emmc      /dev/block/platform/bootdevice/by-name/protect1                       flags=display="Protect_f";backup=1;
-/protect_s          emmc      /dev/block/platform/bootdevice/by-name/protect2                       flags=display="Protect_s";backup=1;
-/nvdata             emmc      /dev/block/platform/bootdevice/by-name/nvdata                         flags=display="Nvdata";backup=1;flashimg=1
-/persist            emmc      /dev/block/platform/bootdevice/by-name/persist                        flags=display="Persist";backup=1;
-/persistent         emmc      /dev/block/platform/bootdevice/by-name/frp                            flags=display="Persistent";backup=1;
+# Dynamic partitions
+/system_image       emmc      /dev/block/mapper/system                                              flags=backup=1;display="System Image";flashimg=1
+/system_ext_image   emmc      /dev/block/mapper/system_ext                                          flags=backup=1;display="System Ext Image";flashimg=1
+/vendor_image       emmc      /dev/block/mapper/vendor                                              flags=backup=1;display="Vendor Image";flashimg=1
+/product_image      emmc      /dev/block/mapper/product                                             flags=backup=1;display="Product Image";flashimg=1
+/super              emmc      /dev/block/platform/bootdevice/by-name/super                          flags=backup=1;display="Super";flashimg=1
+
+# Metadata: stock mounts md_udc as /metadata (required for FBE decrypt)
+/metadata           ext4      /dev/block/platform/bootdevice/by-name/md_udc                         flags=display="Metadata";backup=1
+
+/data               f2fs      /dev/block/platform/bootdevice/by-name/userdata                       flags=fileencryption=aes-256-xts:aes-256-cts:v2,keydirectory=/metadata/vold/metadata_encryption
+/storage            f2fs      /data/media/0                                                         flags=display="Internal Storage";usermrf;backup=1;fsflags="bind";removable
+
+/protect_f          ext4      /dev/block/platform/bootdevice/by-name/protect1                       flags=display="Protect_f";backup=1
+/protect_s          ext4      /dev/block/platform/bootdevice/by-name/protect2                       flags=display="Protect_s";backup=1
+/nvdata             ext4      /dev/block/platform/bootdevice/by-name/nvdata                         flags=display="Nvdata";backup=1
+/nvcfg              ext4      /dev/block/platform/bootdevice/by-name/nvcfg                          flags=display="Nvcfg";backup=1
+/persistent         emmc      /dev/block/platform/bootdevice/by-name/frp                            flags=display="Persistent";backup=1
 /nvram              emmc      /dev/block/platform/bootdevice/by-name/nvram                          flags=display="Nvram";backup=1;flashimg=1
-/logo	            emmc      /dev/block/platform/bootdevice/by-name/logo							flags=display="Logo";backup=1;
-/data            f2fs       /dev/block/bootdevice/by-name/userdata                flags=fileencryption=aes-256-xts:aes-256-cts:v2+emmc_optimized,metadata_encryption=aes-256-xts,keydirectory=/metadata/vold/metadata_encryption:aes-256-cts
-/boot               emmc      /dev/block/by-name/boot                                               flags=display="boot";flashimg=1;backup=1;slotselect;
-/storage            f2fs      /data/media/0                                                         flags=display="Internal Storage";usermrf;backup=1;fsflags="bind";removable;
+/proinfo            emmc      /dev/block/platform/bootdevice/by-name/proinfo                        flags=display="Proinfo";backup=1
+/logo               emmc      /dev/block/platform/bootdevice/by-name/logo                           flags=display="Logo";backup=1
+
+/boot               emmc      /dev/block/platform/bootdevice/by-name/boot                           flags=display="Boot";flashimg=1;backup=1;slotselect
+/vendor_boot        emmc      /dev/block/platform/bootdevice/by-name/vendor_boot                    flags=display="Vendor Boot";flashimg=1;backup=1;slotselect
+/dtbo               emmc      /dev/block/platform/bootdevice/by-name/dtbo                           flags=display="Dtbo";flashimg=1;backup=1;slotselect
+/vbmeta             emmc      /dev/block/platform/bootdevice/by-name/vbmeta                         flags=display="Vbmeta";flashimg=1;backup=1;slotselect
+/md1img             emmc      /dev/block/platform/bootdevice/by-name/md1img                         flags=display="Modem (md1img)";flashimg=1;backup=1;slotselect
+/lk                 emmc      /dev/block/platform/bootdevice/by-name/lk                             flags=display="Bootloader (lk)";flashimg=1;backup=1;slotselect
 
 /expdb              emmc      /dev/block/platform/bootdevice/by-name/expdb
-/seccfg             emmc      /dev/block/platform/bootdevice/by-name/seccfg   
-/tee                emmc      /dev/block/platform/bootdevice/by-name/tee							flags=slotselect;            
-/spmfw              emmc      /dev/block/platform/bootdevice/by-name/spmfw							flags=slotselect;      
-/dtbo               emmc      /dev/block/platform/bootdevice/by-name/dtbo							flags=slotselect;
+/seccfg             emmc      /dev/block/platform/bootdevice/by-name/seccfg
+/tee                emmc      /dev/block/platform/bootdevice/by-name/tee                            flags=slotselect
+/scp                emmc      /dev/block/platform/bootdevice/by-name/scp                            flags=slotselect
+/sspm               emmc      /dev/block/platform/bootdevice/by-name/sspm                           flags=slotselect
+/gz                 emmc      /dev/block/platform/bootdevice/by-name/gz                             flags=slotselect
+/spmfw              emmc      /dev/block/platform/bootdevice/by-name/spmfw                          flags=slotselect
 /otp                emmc      /dev/block/platform/bootdevice/by-name/otp
-/vbmeta             emmc      /dev/block/platform/bootdevice/by-name/vbmeta                         flags=slotselect;display="Vbmeta";backup=1;flashimg=1;
-/vendor_boot               emmc      /dev/block/by-name/vendor_boot                                               flags=display="vendor_boot";flashimg=1;backup=1;slotselect;
 
-# Removablee
-/external_sd        vfat      /dev/block/mmcblk0p1         /dev/block/mmcblk0						flags=storage;wipeingui;removable
-/usb-otg            vfat      /dev/block/sdd1                     									flags=display="usb-otg";storage;wipeingui;removable;fsflags="utf8";
-
-## Internal storage (pitch black)
-/storage            f2fs      /data/media/0                                                         flags=display="Internal Storage";usermrf;backup=1;fsflags="bind";removable;
+# Removable
+/external_sd        auto      /dev/block/mmcblk1p1               /dev/block/mmcblk1                 flags=storage;wipeingui;removable
+/usb-otg            auto      /dev/block/sdd1                                                      flags=display="USB-OTG";storage;wipeingui;removable;fsflags="utf8"

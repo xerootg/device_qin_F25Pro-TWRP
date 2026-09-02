@@ -15,13 +15,13 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/gsi_keys.mk)
 # Inherit some common TWRP stuff.
 $(call inherit-product, vendor/twrp/config/common.mk)
 
-# Inherit from TB330FU device
-$(call inherit-product, device/lenovo/TB330FU/device.mk)
+# Inherit from F25Pro device
+$(call inherit-product, device/qin/F25Pro/device.mk)
 
-PRODUCT_DEVICE := TB330FU
-PRODUCT_NAME := twrp_TB330FU
-PRODUCT_BRAND := Lenovo
-PRODUCT_MODEL := TB330FU
-PRODUCT_MANUFACTURER := lenovo
+PRODUCT_DEVICE := F25Pro
+PRODUCT_NAME := twrp_F25Pro
+PRODUCT_BRAND := QIN
+PRODUCT_MODEL := Qin F25 Pro
+PRODUCT_MANUFACTURER := DUOQIN
 
-PRODUCT_GMS_CLIENTID_BASE := android-lenovo
+PRODUCT_GMS_CLIENTID_BASE := android-duoqin

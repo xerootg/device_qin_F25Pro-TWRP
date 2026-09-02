@@ -6,9 +6,9 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/twrp_TB330FU.mk
+    $(LOCAL_DIR)/twrp_F25Pro.mk
 
 COMMON_LUNCH_CHOICES := \
-    twrp_TB330FU-user \
-    twrp_TB330FU-userdebug \
-    twrp_TB330FU-eng
+    twrp_F25Pro-user \
+    twrp_F25Pro-userdebug \
+    twrp_F25Pro-eng

@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-LOCAL_PATH := device/lenovo/TB330FU
+LOCAL_PATH := device/qin/F25Pro
 
 # Dynamic Partitions
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
@@ -18,7 +18,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 
 # VNDK
-PRODUCT_TARGET_VNDK_VERSION := 35
+PRODUCT_TARGET_VNDK_VERSION := 31
 
 # API
 PRODUCT_SHIPPING_API_LEVEL := 31
