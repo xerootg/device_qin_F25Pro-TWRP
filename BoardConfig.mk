@@ -155,7 +155,7 @@ TW_DEFAULT_BRIGHTNESS := 128
 TW_EXCLUDE_TZDATA := true
 TW_EXCLUDE_NANO := true
 TW_INCLUDE_DUMLOCK := false
-TW_NO_BATT_PERCENT := true
+TW_NO_BATT_PERCENT := false
 TW_NO_CPU_TEMP := true
 TW_NO_DOWNLOAD_MODE := true
 TW_NO_FASTBOOT_BOOT := true
@@ -183,3 +183,6 @@ TW_INCLUDE_CRYPTO := true
 TW_INCLUDE_CRYPTO_FBE := true
 TW_INCLUDE_FBE_METADATA_DECRYPT := true
 TW_PREPARE_DATA_MEDIA_EARLY := true
+
+# Dynamic partition tools (lptools for super manipulation)
+TW_INCLUDE_LPTOOLS := true
