@@ -119,6 +119,12 @@ TARGET_COPY_OUT_PRODUCT := product
 TARGET_COPY_OUT_VENDOR := vendor
 TARGET_COPY_OUT_SYSTEM_EXT = system_ext
 
+# SELinux: twrp-14.1's bootable/recovery no longer ships the TWRP
+# permissive-recovery policy (twrp.te); without it the A14 policy keeps
+# recovery/init/logd enforcing and every TWRP service dies on avc
+# denials. recovery_only() keeps this out of normal-boot policy.
+BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy
+
 # Platform
 TARGET_BOARD_PLATFORM := mt6768
 PRODUCT_PLATFORM := mt6768

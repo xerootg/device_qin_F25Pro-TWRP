@@ -1,0 +1,15 @@
+<!-- Declares the boot control HAL so hwservicemanager (which enforces
+     VINTF on android-14.1) lets android.hardware.boot@1.2-service
+     register; TWRP needs IBootControl for A/B slot handling. -->
+<manifest version="1.0" type="device">
+    <hal format="hidl">
+        <name>android.hardware.boot</name>
+        <transport>hwbinder</transport>
+        <version>1.2</version>
+        <interface>
+            <name>IBootControl</name>
+            <instance>default</instance>
+        </interface>
+        <fqname>@1.2::IBootControl/default</fqname>
+    </hal>
+</manifest>
