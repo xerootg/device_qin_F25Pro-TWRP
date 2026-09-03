@@ -1,3 +1,6 @@
 ro.mediatek.platform=MT6768
 ro.hardware=mt6768
 ro.crypto.volume.filenames_mode=aes-256-cts
+# TWRP's ramdisk vintf-fragment scan mishandles find output (trailing
+# newline), so pin the keymaster version it should use for decrypt.
+keymaster_ver=4.1
