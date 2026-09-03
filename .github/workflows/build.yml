@@ -1,71 +1,29 @@
-name: Recovery Build
+name: TWRP CI
 
 on:
+  push:
+    branches:
+      - TWRP
   workflow_dispatch:
-    inputs:
-      MANIFEST_URL:
-        description: 'MANIFEST_URL (if want to use SSH keys, use git@github.com:XXXXX)'
-        required: true
-        default: 'PLACEHOLDER'
-      MANIFEST_BRANCH:
-        description: 'MANIFEST_BRANCH'
-        required: true
-        default: 'PLACEHOLDER'
-      DEVICE_TREE_URL:
-        description: 'DEVICE_TREE_URL'
-        required: true
-        default: 'PLACEHOLDER'
-      DEVICE_TREE_BRANCH:
-        description: 'DEVICE_TREE_BRANCH'
-        required: true
-        default: 'PLACEHOLDER'
-      DEVICE_PATH:
-        description: 'DEVICE_PATH'
-        required: true
-        default: 'PLACEHOLDER'
-      DEVICE_NAME:
-        description: 'DEVICE_NAME'
-        required: true
-        default: 'PLACEHOLDER'
-      MAKEFILE_NAME:
-        description: 'MAKEFILE_NAME'
-        required: true
-        default: 'PLACEHOLDER'
-      BUILD_TARGET:
-        description: 'BUILD_TARGET'
-        required: true
-        default: 'PLACEHOLDER'
-      USER_NAME:
-        description: 'Git Username'
-        required: true
-        default: 'PLACEHOLDER'
-      USER_EMAIL:
-        description: 'Git Email'
-        required: true
-        default: 'PLACEHOLDER'
+
+env:
+  MANIFEST_URL: https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git
+  MANIFEST_BRANCH: twrp-12.1
+  DEVICE_PATH: device/qin/F25Pro
+  DEVICE_NAME: F25Pro
+  MAKEFILE_NAME: twrp_F25Pro
+  BUILD_TARGET: vendorboot
 
 jobs:
   build:
-    if: github.event.repository.owner.id == github.event.sender.id
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-    - name: Display Run Parameters
-      run: |
-        echo "::group::User Environment Variables"
-        echo "Manifest URL: ${{ github.event.inputs.MANIFEST_URL }}"
-        echo "Manifest Branch: ${{ github.event.inputs.MANIFEST_BRANCH }}"
-        echo "Device Tree URL: ${{ github.event.inputs.DEVICE_TREE_URL }}"
-        echo "Device Tree Branch: ${{ github.event.inputs.DEVICE_TREE_BRANCH }}"
-        echo "Device Path: ${{ github.event.inputs.DEVICE_PATH }}"
-        echo "Device Name: ${{ github.event.inputs.DEVICE_NAME }}"
-        echo "Makefile Name: ${{ github.event.inputs.MAKEFILE_NAME }}"
-        echo "Build Target: ${{ github.event.inputs.BUILD_TARGET }}.img"
-        echo "::endgroup::"
-
     - name: Check Out
       uses: actions/checkout@v4
+      with:
+        path: device-tree
 
     - name: Cleanup
       uses: rokibhasansagar/slimhub_actions@main
@@ -75,18 +33,11 @@ jobs:
         sudo apt install git aria2 -y
         mkdir ofx_scripts
         cd ofx_scripts
-        git clone https://gitlab.com/OrangeFox/misc/scripts 
+        git clone https://gitlab.com/OrangeFox/misc/scripts
         cd scripts
         sudo bash setup/android_build_env.sh
         sed -i 's/cd -/cd ../g' setup/install_android_sdk.sh
         sudo bash setup/install_android_sdk.sh
-
-    - name: Setup SSH Keys
-      if: ${{ startsWith(github.event.inputs.MANIFEST_URL, 'git@github.com') }}
-      uses: webfactory/ssh-agent@v0.5.4
-      with:
-          ssh-private-key: |
-              ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Install repo
       run: |
@@ -94,26 +45,27 @@ jobs:
         curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
         chmod a+x ~/bin/repo
         sudo ln -sf ~/bin/repo /usr/bin/repo
-      
+
     - name: Initialize repo
       run: |
         mkdir workspace
         cd workspace
         echo "workspace-folder=$(pwd)" >> $GITHUB_OUTPUT
-        git config --global user.name "${{ github.event.inputs.USER_NAME }}"
-        git config --global user.email "${{ github.event.inputs.USER_EMAIL }}"
-        repo init --depth=1 -u ${{ github.event.inputs.MANIFEST_URL }} -b ${{ github.event.inputs.MANIFEST_BRANCH }}
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@users.noreply.github.com"
+        repo init --depth=1 -u ${{ env.MANIFEST_URL }} -b ${{ env.MANIFEST_BRANCH }}
       id: pwd
-          
+
     - name: Repo Sync
       run: |
         repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
       working-directory: workspace
-      
-    - name: Clone device tree
+
+    - name: Copy device tree
       run: |
-        git clone ${{ github.event.inputs.DEVICE_TREE_URL }} -b ${{ github.event.inputs.DEVICE_TREE_BRANCH }} ./${{ github.event.inputs.DEVICE_PATH }}
-      working-directory: ${{ steps.pwd.outputs.workspace-folder }}
+        mkdir -p workspace/${{ env.DEVICE_PATH }}
+        cp -r device-tree/. workspace/${{ env.DEVICE_PATH }}/
+        rm -rf workspace/${{ env.DEVICE_PATH }}/.git
 
     - name: Set Swap Space
       uses: pierotofy/set-swap-space@master
@@ -124,22 +76,21 @@ jobs:
       run: |
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
-        lunch ${{ github.event.inputs.MAKEFILE_NAME }}-eng && make clean && make ${{ github.event.inputs.BUILD_TARGET }}image -j$(nproc --all)
+        lunch ${{ env.MAKEFILE_NAME }}-eng && make clean && make ${{ env.BUILD_TARGET }}image -j$(nproc --all)
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
     - name: Upload to Release
       uses: softprops/action-gh-release@v1
       with:
-        files: | 
-          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/${{ github.event.inputs.BUILD_TARGET }}.img
-          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/*.zip
-          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/*vendor*.img
-        name: ${{ github.event.inputs.DEVICE_NAME }}-${{ github.run_id }}
-        tag_name: ${{ github.run_id }}
+        files: |
+          workspace/out/target/product/${{ env.DEVICE_NAME }}/vendor_boot.img
+        name: TWRP-F25Pro-${{ github.run_number }}
+        tag_name: build-${{ github.run_number }}
         body: |
-          Manifest: ${{ github.event.inputs.MANIFEST_BRANCH }}
-          Device: ${{ github.event.inputs.DEVICE_NAME }}
-          Target: ${{ github.event.inputs.BUILD_TARGET }}.img
+          TWRP vendor_boot image for the Qin F25 Pro (mt6768, DUOQIN F22Pro firmware)
+          Manifest: ${{ env.MANIFEST_BRANCH }}
+          Commit: ${{ github.sha }}
+
+          Flash: `fastboot flash vendor_boot_a vendor_boot.img`
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
