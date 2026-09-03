@@ -39,5 +39,7 @@
 /otp                emmc      /dev/block/by-name/otp
 
 # Removable
-/external_sd        auto      /dev/block/mmcblk1p1               /dev/block/mmcblk1                 flags=storage;wipeingui;removable
-/usb-otg            auto      /dev/block/sdd1                                                      flags=display="USB-OTG";storage;wipeingui;removable;fsflags="utf8"
+# No SD slot on the Qin F25 Pro. USB storage on this kernel enumerates as
+# sda (eMMC boot regions are mmcblk0boot0/1, not sd*); sda2 as alternate
+# for sticks with an EFI/second partition layout.
+/usb-otg            auto      /dev/block/sda1                    /dev/block/sda                     flags=display="USB-OTG";storage;wipeingui;removable;fsflags="utf8"
