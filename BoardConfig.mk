@@ -172,6 +172,10 @@ TW_USE_EXTERNAL_STORAGE := true
 # Device
 TW_DEVICE_VERSION := Qin_F25Pro
 
+# Logging (needed to debug keystore2/decrypt; keep - cheap and useful)
+TWRP_INCLUDE_LOGCAT := true
+TARGET_USES_LOGD := true
+
 BOARD_USES_MTK_HARDWARE := true
 
 # Decryption
