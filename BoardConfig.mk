@@ -92,7 +92,6 @@ BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION := 3
 
 # System as root
 BOARD_SUPPRESS_SECURE_ERASE := true
-BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
 
 # Partitions
 BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
@@ -137,10 +136,10 @@ TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
 
 # Match the running ROM exactly - soft keymaster binds keyblobs to
 # os_version/patchlevel, and mismatched values break decrypt with
-# KM error -38 (INVALID_ARGUMENT) during keyblob upgrade.
+# KM error -38 (INVALID_ARGUMENT) during keyblob upgrade. The os_version
+# half (14) comes from the twrp-14.1 manifest itself.
 PLATFORM_SECURITY_PATCH := 2025-05-05
 VENDOR_SECURITY_PATCH := 2025-10-05
-PLATFORM_VERSION := 14
 
 # TWRP configuration
 TW_THEME := portrait_mdpi

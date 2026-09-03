@@ -8,7 +8,7 @@ on:
 
 env:
   MANIFEST_URL: https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git
-  MANIFEST_BRANCH: twrp-12.1
+  MANIFEST_BRANCH: twrp-14.1
   DEVICE_PATH: device/qin/F25Pro
   DEVICE_NAME: F25Pro
   MAKEFILE_NAME: twrp_F25Pro
@@ -67,6 +67,13 @@ jobs:
         cp -r device-tree/. workspace/${{ env.DEVICE_PATH }}/
         rm -rf workspace/${{ env.DEVICE_PATH }}/.git
 
+    - name: Patch bootable/recovery for android-14.1
+      run: |
+        # twrp-14.1's bootable/recovery doesn't build against android-14.1
+        # vold/soong out of the box (removed ndk_platform AIDL variants,
+        # removed fscrypt_policy union, removed FDE cryptfs API).
+        git -C workspace/bootable/recovery apply "$GITHUB_WORKSPACE/workspace/${{ env.DEVICE_PATH }}/patches/bootable-recovery-twrp-14.1.patch"
+
     - name: Set Swap Space
       uses: pierotofy/set-swap-space@master
       with:
@@ -76,11 +83,7 @@ jobs:
       run: |
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
-        # must match the ROM for keymaster keyblob binding (decrypt);
-        # BoardConfig sets these too late for version_defaults.mk
-        export PLATFORM_VERSION=14
-        export PLATFORM_SECURITY_PATCH=2025-05-05
-        lunch ${{ env.MAKEFILE_NAME }}-eng && make clean && make ${{ env.BUILD_TARGET }}image -j$(nproc --all)
+        lunch ${{ env.MAKEFILE_NAME }}-ap2a-eng && make clean && make ${{ env.BUILD_TARGET }}image -j$(nproc --all)
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
     - name: Upload to Release
