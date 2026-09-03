@@ -126,7 +126,7 @@ PRODUCT_PLATFORM := mt6768
 
 # Recovery: stock layout is recovery-in-vendor_boot (boot header v4),
 # so TWRP is built into vendor_boot and flashed to the vendor_boot partition.
-TARGET_RECOVERY_PIXEL_FORMAT := BGRA_8888
+TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 TARGET_NO_RECOVERY := true
 BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true
 BOARD_USES_METADATA_PARTITION := true
