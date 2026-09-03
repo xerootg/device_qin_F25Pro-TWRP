@@ -1,3 +1,11 @@
+on early-init
+    # A14 builds servicemanager/hwservicemanager against the bootstrap
+    # linker, which doesn't exist in the recovery ramdisk. A symlink
+    # checked into recovery/root survives local rsync builds but not the
+    # CI copy steps, so create it at runtime instead.
+    mkdir /system/bin/bootstrap 0755 root root
+    symlink /system/bin/linker64 /system/bin/bootstrap/linker64
+
 on init
     setprop sys.usb.configfs 1
     setprop sys.usb.controller "musb-hdrc"
