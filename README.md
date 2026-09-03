@@ -4,6 +4,12 @@ Ported from the Lenovo TB330FU (mt6768) tree. The F25 Pro ships DUOQIN's
 F22Pro firmware (`ro.product.device=F22Pro`, board `4313RO_P0`), Android 12,
 MediaTek Helio G85 (mt6768).
 
+**Source of truth for prebuilts is the factory ROM at
+`/home/xero/Downloads/image/`** (Nov build, preloader AGN_4313R). The
+`qin_f25_pro_backup` dir is an older firmware generation — its
+vendor_boot dtb/modules do NOT match this ROM's kernel and will bootloop
+if mixed (identical kernels, different dtb + .ko set).
+
 ## Layout
 
 Stock uses boot header v4 with recovery-in-vendor_boot:
@@ -17,10 +23,11 @@ Kernel and dtb under `prebuilt/` are extracted from the stock
 ## Decryption
 
 FBE (aes-256-xts v2) with metadata encryption; metadata lives on the
-`md_udc` partition (per stock `fstab.mt6768`). TEE is TrustKernel:
-`teed`, TAs (`vendor/app/t6`, `vendor/thh/ta`), keymaster@4.1 and
-gatekeeper@1.0 blobs are bundled from stock vendor and started via
-`init.recovery.trustkernel.rc`.
+`md_udc` partition (per stock `fstab.mt6768`). This ROM uses **software
+keymaster** (generic `android.hardware.keymaster@4.1-service`, no TEE
+client libs, no tkcore modules) and SoftGatekeeper. Both services are
+bundled from the ROM vendor image and started from
+`init.recovery.mt6768.rc`.
 
 ## Building
 

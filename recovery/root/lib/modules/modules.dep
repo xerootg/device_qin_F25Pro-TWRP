@@ -4,7 +4,6 @@
 /lib/modules/mt6768_clkmgr.ko: /lib/modules/clk-common.ko /lib/modules/aee_aed.ko /lib/modules/mrdump.ko
 /lib/modules/phy-mtk-tphy.ko:
 /lib/modules/mtk-pmic-keys.ko:
-/lib/modules/tkcore.ko:
 /lib/modules/mtk-pmic-wrap.ko:
 /lib/modules/mtk-smi.ko: /lib/modules/aee_aed.ko /lib/modules/mrdump.ko
 /lib/modules/aee_hangdet.ko: /lib/modules/mrdump.ko
@@ -63,7 +62,6 @@
 /lib/modules/pinctrl-mt6768.ko: /lib/modules/pinctrl-mtk-v2.ko
 /lib/modules/device-apc-common-legacy.ko: /lib/modules/aee_aed.ko /lib/modules/mrdump.ko
 /lib/modules/aee_aed.ko: /lib/modules/mrdump.ko
-/lib/modules/teeperf.ko:
 /lib/modules/clkdbg-mt6768.ko: /lib/modules/clk-common.ko /lib/modules/aee_aed.ko /lib/modules/mrdump.ko
 /lib/modules/spi-mt65xx.ko:
 /lib/modules/memory-amms.ko:
@@ -117,7 +115,6 @@
 /lib/modules/clk-mt6768.ko: /lib/modules/clk-common.ko /lib/modules/aee_aed.ko /lib/modules/mrdump.ko
 /lib/modules/mt6397.ko:
 /lib/modules/mtk_pd_charging.ko: /lib/modules/mtk_charger_framework.ko /lib/modules/adapter_class.ko /lib/modules/mtk_charger_algorithm_class.ko /lib/modules/charger_class.ko
-/lib/modules/tkcore_drv.ko: /lib/modules/tkcore.ko
 /lib/modules/bootprof.ko:
 /lib/modules/emimpu.ko: /lib/modules/aee_aed.ko /lib/modules/mrdump.ko
 /lib/modules/mtk_dramc.ko:

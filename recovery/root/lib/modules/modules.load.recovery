@@ -69,8 +69,6 @@ mtk-cmdq-drv-ext.ko
 cmdq-platform-mt6768.ko
 mmprofile.ko
 spi-mt65xx.ko
-tkcore_drv.ko
-tkcore.ko
 extdev_io_class.ko
 mtk-pmic-keys.ko
 mtk-kpd.ko
@@ -86,7 +84,6 @@ aw35615_whole.ko
 clkbuf.ko
 device-apc-common-legacy.ko
 device-apc-mt6768.ko
-teeperf.ko
 adapter_class.ko
 charger_class.ko
 mtk_charger_algorithm_class.ko
