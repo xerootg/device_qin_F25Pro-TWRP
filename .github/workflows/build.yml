@@ -76,6 +76,10 @@ jobs:
       run: |
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
+        # must match the ROM for keymaster keyblob binding (decrypt);
+        # BoardConfig sets these too late for version_defaults.mk
+        export PLATFORM_VERSION=14
+        export PLATFORM_SECURITY_PATCH=2025-05-05
         lunch ${{ env.MAKEFILE_NAME }}-eng && make clean && make ${{ env.BUILD_TARGET }}image -j$(nproc --all)
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
