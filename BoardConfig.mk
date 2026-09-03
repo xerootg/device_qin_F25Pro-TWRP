@@ -193,3 +193,11 @@ TW_PREPARE_DATA_MEDIA_EARLY := true
 
 # Dynamic partition tools (lptools for super manipulation)
 TW_INCLUDE_LPTOOLS := true
+
+# bootctl CLI in recovery for A/B state inspection
+TW_RECOVERY_ADDITIONAL_RELINK_BINARY_FILES += $(TARGET_OUT_EXECUTABLES)/bootctl
+
+# Slot B is factory-empty (super_b is zero bytes); activating it strands
+# the device until the bootloader retry counter falls back to A. Blocks
+# Set_Active_Slot("B") in the patched bootable/recovery.
+TW_FORBID_SLOT_B := true

@@ -62,6 +62,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES_DEBUG += \
     bootctrl \
 
+# bootctl CLI for inspecting/verifying A/B state from the TWRP shell
+PRODUCT_PACKAGES += \
+    bootctl
+
 # Health HAL
 PRODUCT_PACKAGES += \
     android.hardware.health@2.1-impl \

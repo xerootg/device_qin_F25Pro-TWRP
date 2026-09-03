@@ -86,7 +86,13 @@ Return<void> BootControl::markBootSuccessful(markBootSuccessful_cb _hidl_cb) {
 
 Return<void> BootControl::setActiveBootSlot(uint32_t slot, setActiveBootSlot_cb _hidl_cb) {
     struct CommandResult cr;
-    if (impl_.SetActiveBootSlot(slot) && implext_.SetBootRegionSlot(slot)) {
+    /* Boot-region switch first: on this eMMC device SetBootRegionSlot always
+     * fails (the code is UFS-only, /dev/block/sdc does not exist), and with
+     * the original order the misc bootctrl metadata was already flipped by
+     * the time it failed - a slot switch to the EMPTY slot B would strand
+     * the device. Failing before touching misc makes the switch a clean
+     * no-op error instead. */
+    if (implext_.SetBootRegionSlot(slot) && impl_.SetActiveBootSlot(slot)) {
         cr.success = true;
         cr.errMsg = "Success";
     } else {

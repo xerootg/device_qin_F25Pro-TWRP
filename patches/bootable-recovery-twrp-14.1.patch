@@ -1,5 +1,5 @@
 diff --git a/Android.mk b/Android.mk
-index 78b9430..c65dd75 100755
+index 78b9430..a46aed4 100755
 --- a/Android.mk
 +++ b/Android.mk
 @@ -139,6 +139,7 @@ LOCAL_C_INCLUDES += \
@@ -10,7 +10,17 @@ index 78b9430..c65dd75 100755
  LOCAL_SHARED_LIBRARIES += libz libc libcutils libstdc++ libtar libblkid libminuitwrp libmtdutils libtwadbbu
  LOCAL_SHARED_LIBRARIES += libbootloader_message libcrecovery libtwrpdigest libc++ libaosprecovery libcrypto libbase 
  LOCAL_SHARED_LIBRARIES += libziparchive libselinux libdl_android.bootstrap
-@@ -334,14 +335,14 @@ ifeq ($(TW_INCLUDE_CRYPTO), true)
+@@ -164,6 +165,9 @@ ifeq ($(AB_OTA_UPDATER),true)
+     android.hardware.boot@1.1-service android.hardware.boot@1.1-service.rc \
+     android.hardware.boot@1.2-service android.hardware.boot@1.2-service.rc
+ endif
++ifeq ($(TW_FORBID_SLOT_B),true)
++    LOCAL_CFLAGS += -DTW_FORBID_SLOT_B
++endif
+ 
+ ifeq ($(PRODUCT_USE_DYNAMIC_PARTITIONS),true)
+     LOCAL_CFLAGS += -DPRODUCT_USE_DYNAMIC_PARTITIONS=1
+@@ -334,14 +338,14 @@ ifeq ($(TW_INCLUDE_CRYPTO), true)
      TW_INCLUDE_CRYPTO_FBE := true
      LOCAL_CFLAGS += -DTW_INCLUDE_FBE
      LOCAL_SHARED_LIBRARIES += android.frameworks.stats@1.0 android.hardware.authsecret@1.0 \
@@ -167,7 +177,7 @@ index 8c53567..9c66f3a 100755
  #endif
  	Has_Data_Media = false;
 diff --git a/partitionmanager.cpp b/partitionmanager.cpp
-index 171fecc..345a305 100755
+index 171fecc..1274e88 100755
 --- a/partitionmanager.cpp
 +++ b/partitionmanager.cpp
 @@ -595,7 +595,9 @@ void TWPartitionManager::Decrypt_Data() {
@@ -222,6 +232,22 @@ index 171fecc..345a305 100755
  	} else {
  		// Parent
  		int status;
+@@ -3289,6 +3278,15 @@ void TWPartitionManager::Set_Active_Slot(const string& Slot) {
+ 	}
+ 	if (Active_Slot_Display == Slot)
+ 		return;
++#ifdef TW_FORBID_SLOT_B
++	/* Factory-empty slot B (no super_b contents): activating it strands
++	 * the device until the bootloader retry counter falls back to A. */
++	if (Slot == "B") {
++		LOGERR("Slot B is disabled on this device (factory-empty super_b).\n");
++		gui_msg(Msg(msg::kError, "unable_set_boot_slot=Error changing bootloader boot slot to {1}")(Slot));
++		return;
++	}
++#endif
+ 	LOGINFO("Setting active slot %s\n", Slot.c_str());
+ #ifdef AB_OTA_UPDATER
+ 	if (!Active_Slot_Display.empty()) {
 diff --git a/prebuilt/Android.mk b/prebuilt/Android.mk
 index f3b7160..b4e3cdd 100755
 --- a/prebuilt/Android.mk
