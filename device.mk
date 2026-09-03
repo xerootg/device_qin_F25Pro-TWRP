@@ -10,6 +10,11 @@ LOCAL_PATH := device/qin/F25Pro
 # Dynamic Partitions
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
 
+# First-stage fstab in vendor ramdisk (stock layout); also ensures the
+# vendor_ramdisk staging dir exists so mkbootfs doesn't produce an empty cpio.
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/recovery/root/first_stage_ramdisk/fstab.mt6768:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.mt6768
+
 # Virtual AB
 ENABLE_VIRTUAL_AB := true
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota.mk)
