@@ -135,10 +135,12 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
 # system prop
 TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
 
-# Hack: prevent anti rollback
-PLATFORM_SECURITY_PATCH := 2099-12-31
-VENDOR_SECURITY_PATCH := 2099-12-31
-PLATFORM_VERSION := 99.87.36
+# Match the running ROM exactly - soft keymaster binds keyblobs to
+# os_version/patchlevel, and mismatched values break decrypt with
+# KM error -38 (INVALID_ARGUMENT) during keyblob upgrade.
+PLATFORM_SECURITY_PATCH := 2025-05-05
+VENDOR_SECURITY_PATCH := 2025-10-05
+PLATFORM_VERSION := 14
 
 # TWRP configuration
 TW_THEME := portrait_mdpi
